@@ -5,6 +5,11 @@ export async function loginUser(loginData) {
     return response.data;
 }
 
+export async function registerUser(registerData) {
+    const response = await api.post('/auth/signup', registerData);
+    return response.data;
+}
+
 export async function getCurrentUser() {
     const token = localStorage.getItem('token');
 
