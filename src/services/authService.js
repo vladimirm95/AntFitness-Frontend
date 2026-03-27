@@ -21,3 +21,18 @@ export async function getCurrentUser() {
 
     return response.data;
 }
+
+export async function getWorkoutCalendar(year, month) {
+    const response = await api.get(`/workouts/calendar?year=${year}&month=${month}`);
+    return response.data;
+}
+
+export async function getWorkoutByDate(date) {
+    const response = await api.get(`/workouts?date=${date}`);
+    return response.data;
+}
+
+export async function getExercises() {
+    const response = await api.get('/exercises');
+    return response.data;
+}

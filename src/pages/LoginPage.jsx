@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../services/authService';
 
 function LoginPage() {
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         usernameOrEmail: '',
         password: '',
@@ -26,13 +29,15 @@ function LoginPage() {
             console.log('Login success:', data);
 
             localStorage.setItem('token', data.token);
-
             setMessage('Login successful!');
+
+            navigate('/');
         } catch (error) {
             console.error('Login failed:', error);
             setMessage('Login failed.');
         }
     }
+
     return (
         <div>
             <h2>Login Page</h2>
