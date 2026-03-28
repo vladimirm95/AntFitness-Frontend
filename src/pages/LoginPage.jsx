@@ -25,52 +25,55 @@ function LoginPage() {
         e.preventDefault();
 
         try {
-            const data = await loginUser(formData);
-            console.log('Login success:', data);
-
-            localStorage.setItem('token', data.token);
-            setMessage('Login successful!');
-
+            await loginUser(formData);
+            setMessage('');
             navigate('/');
         } catch (error) {
             console.error('Login failed:', error);
-            setMessage('Login failed.');
+            setMessage(error.response?.data?.message || 'Login failed.');
         }
     }
 
     return (
-        <div>
-            <h2>Login Page</h2>
+        <div className="auth-wrapper">
+            <div className="auth-card">
+                <h1 className="auth-title">Welcome back</h1>
+                <p className="auth-subtitle">
+                    Login to continue managing your workouts and progress.
+                </p>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Username or Email</label>
-                    <br />
-                    <input
-                        type="text"
-                        name="usernameOrEmail"
-                        value={formData.usernameOrEmail}
-                        onChange={handleChange}
-                    />
-                </div>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label className="form-label">Username or Email</label>
+                        <input
+                            type="text"
+                            name="usernameOrEmail"
+                            value={formData.usernameOrEmail}
+                            onChange={handleChange}
+                            placeholder="Enter username or email"
+                        />
+                    </div>
 
-                <div style={{ marginTop: '10px' }}>
-                    <label>Password</label>
-                    <br />
-                    <input
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                    />
-                </div>
+                    <div className="form-group">
+                        <label className="form-label">Password</label>
+                        <input
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="Enter password"
+                        />
+                    </div>
 
-                <button type="submit" style={{ marginTop: '10px' }}>
-                    Login
-                </button>
-            </form>
+                    <div className="form-actions" style={{ marginTop: '8px' }}>
+                        <button type="submit" className="btn-primary" style={{ width: '100%' }}>
+                            Login
+                        </button>
+                    </div>
+                </form>
 
-            {message && <p>{message}</p>}
+                {message && <div className="status-message">{message}</div>}
+            </div>
         </div>
     );
 }

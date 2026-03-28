@@ -1,0 +1,123 @@
+.exercises-header {
+    margin-bottom: 24px;
+}
+
+.exercises-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: -0.03em;
+}
+
+.exercises-subtitle {
+    color: var(--muted);
+    max-width: 760px;
+}
+
+.exercises-toolbar {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.exercises-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 18px;
+}
+
+.exercise-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.exercise-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 32px rgba(15, 23, 42, 0.09);
+    border-color: #cbd5e1;
+}
+
+.exercise-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.exercise-name {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0 0 6px;
+}
+
+.exercise-main-group {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.exercise-description {
+    color: var(--muted);
+    line-height: 1.55;
+    margin-bottom: 16px;
+    min-height: 72px;
+}
+
+.exercise-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.exercise-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    color: #334155;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.exercise-empty {
+    padding: 26px;
+    border-radius: 20px;
+    background: #ffffff;
+    border: 1px dashed #cbd5e1;
+    color: var(--muted);
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+@media (max-width: 1100px) {
+    .exercises-toolbar {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .exercises-toolbar {
+        grid-template-columns: 1fr;
+    }
+
+    .exercises-title {
+        font-size: 26px;
+    }
+
+    .exercise-description {
+        min-height: auto;
+    }
+}

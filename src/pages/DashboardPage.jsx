@@ -4,7 +4,7 @@ import api from '../services/api';
 
 function DashboardPage() {
     const [user, setUser] = useState(null);
-    const [message, setMessage] = useState('Loading...');
+    const [message, setMessage] = useState('');
 
     const today = new Date();
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -27,10 +27,8 @@ function DashboardPage() {
             try {
                 const userData = await getCurrentUser();
                 setUser(userData);
-                setMessage('');
             } catch (error) {
                 console.error('Failed to fetch user:', error);
-                setMessage('You are not authenticated.');
             }
 
             try {
@@ -112,13 +110,13 @@ function DashboardPage() {
         } catch (error) {
             console.error('Failed to fetch workout:', error);
             setWorkout(null);
-            setMessage('Workout plan not found for selected date.');
+            setMessage('No workout plan found for the selected date.');
         }
     }
 
     async function handleCreateWorkout() {
         if (!selectedDate) {
-            setMessage('Select a date from calendar first.');
+            setMessage('Select a date from the calendar first.');
             return;
         }
 
@@ -162,12 +160,17 @@ function DashboardPage() {
 
     async function handleAddExercise() {
         if (!workout) {
-            setMessage('Load or create a workout first.');
+            setMessage('Create or open a workout first.');
+            return;
+        }
+
+        if (workout.completed) {
+            setMessage('Completed workout cannot be changed.');
             return;
         }
 
         if (!exerciseForm.exerciseId || !exerciseForm.sets || !exerciseForm.reps) {
-            setMessage('Fill all fields for exercise.');
+            setMessage('Fill all exercise fields.');
             return;
         }
 
@@ -196,6 +199,16 @@ function DashboardPage() {
     }
 
     async function handleDeleteExercise(workoutExerciseId) {
+        if (!workout) {
+            setMessage('No workout selected.');
+            return;
+        }
+
+        if (workout.completed) {
+            setMessage('Completed workout cannot be changed.');
+            return;
+        }
+
         try {
             await api.delete(`/workouts/exercises/${workoutExerciseId}`);
 
@@ -233,213 +246,314 @@ function DashboardPage() {
 
     const daysInMonth = getDaysInMonth(currentYear, currentMonth);
     const firstDay = getFirstDayOfMonth(currentYear, currentMonth);
-
     const dayNames = ['Pon', 'Uto', 'Sri', 'Čet', 'Pet', 'Sub', 'Ned'];
+    const isWorkoutCompleted = workout?.completed === true;
 
     return (
         <div>
-            <h2>Dashboard Page</h2>
+            <section className="hero-card">
+                <h1 className="hero-title">
+                    Welcome back{user?.username ? `, ${user.username}` : ''}.
+                </h1>
+                <p className="hero-subtitle">
+                    Plan your workouts, stay consistent, and keep your progress organized in one place.
+                </p>
+                {message && <div className="status-message" style={{ marginTop: '18px' }}>{message}</div>}
+            </section>
 
-            {user && (
-                <div style={{ marginBottom: '20px' }}>
-                    <p><strong>ID:</strong> {user.id}</p>
-                    <p><strong>Username:</strong> {user.username}</p>
-                    <p><strong>Email:</strong> {user.email}</p>
-                    <p><strong>Role:</strong> {user.role}</p>
-                </div>
-            )}
-
-            {message && <p>{message}</p>}
-
-            <hr />
-
-            <h3>Workout Calendar</h3>
-
-            <div
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '20px',
-                    marginBottom: '15px',
-                }}
-            >
-                <button onClick={previousMonth}>{'<'}</button>
-                <h3 style={{ margin: 0 }}>
-                    {getMonthName(currentMonth)} {currentYear}
-                </h3>
-                <button onClick={nextMonth}>{'>'}</button>
-            </div>
-
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(7, 55px)',
-                    gap: '8px',
-                    marginBottom: '10px',
-                }}
-            >
-                {dayNames.map((name) => (
-                    <div key={name} style={{ fontWeight: 'bold', textAlign: 'center' }}>
-                        {name}
-                    </div>
-                ))}
-
-                {Array.from({ length: firstDay - 1 }).map((_, index) => (
-                    <div key={`empty-${index}`} />
-                ))}
-
-                {Array.from({ length: daysInMonth }).map((_, index) => {
-                    const day = index + 1;
-                    const dateString = formatDate(currentYear, currentMonth, day);
-                    const status = getDayStatus(dateString);
-                    const isSelected = selectedDate === dateString;
-
-                    let backgroundColor = '#f0f0f0';
-
-                    if (status === 'planned') backgroundColor = '#cfe2ff';
-                    if (status === 'completed') backgroundColor = '#d9f7be';
-                    if (isSelected) backgroundColor = '#ffe58f';
-
-                    return (
-                        <button
-                            key={day}
-                            onClick={() => handleDayClick(day)}
-                            style={{
-                                width: '55px',
-                                height: '40px',
-                                border: '1px solid #ccc',
-                                borderRadius: '6px',
-                                backgroundColor,
-                                cursor: 'pointer',
-                            }}
-                        >
-                            {day}
-                        </button>
-                    );
-                })}
-            </div>
-
-            <div style={{ marginTop: '10px', marginBottom: '20px' }}>
-                <span style={{ marginRight: '15px' }}>
-                    <span style={{ color: '#1677ff' }}>●</span> Planned
-                </span>
-                <span style={{ marginRight: '15px' }}>
-                    <span style={{ color: '#52c41a' }}>●</span> Completed
-                </span>
-                <span>
-                    <span style={{ color: '#faad14' }}>●</span> Selected
-                </span>
-            </div>
-
-            <hr />
-
-            <h3>Workout Details</h3>
-
-            <p>
-                <strong>Selected date:</strong>{' '}
-                {selectedDate || 'No date selected'}
-            </p>
-
-            <div style={{ marginBottom: '15px' }}>
-                <button onClick={handleCreateWorkout} disabled={!selectedDate}>
-                    Create Workout For Selected Date
-                </button>
-
-                <button
-                    onClick={() => loadWorkoutByDate(selectedDate)}
-                    disabled={!selectedDate}
-                    style={{ marginLeft: '10px' }}
-                >
-                    Load Workout
-                </button>
-            </div>
-
-            {workout && (
-                <div>
-                    <p><strong>Date:</strong> {workout.date}</p>
-                    <p>
-                        <strong>Completed:</strong> {workout.completed ? 'Yes' : 'No'}
-                    </p>
-
-                    <button
-                        onClick={handleCompleteWorkout}
-                        disabled={workout.completed}
-                        style={{ marginBottom: '15px' }}
+            <div className="dashboard-grid">
+                <section className="card">
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: '16px',
+                            marginBottom: '18px',
+                        }}
                     >
-                        {workout.completed ? 'Workout Completed' : 'Mark as Completed'}
-                    </button>
-
-                    <hr />
-
-                    <h4>Add Exercise</h4>
-
-                    <div style={{ marginBottom: '15px' }}>
-                        <select
-                            name="exerciseId"
-                            value={exerciseForm.exerciseId}
-                            onChange={handleExerciseFormChange}
-                        >
-                            <option value="">Select exercise</option>
-                            {allExercises.map((exercise) => (
-                                <option key={exercise.id} value={exercise.id}>
-                                    {exercise.name}
-                                </option>
-                            ))}
-                        </select>
-
-                        <input
-                            type="number"
-                            name="sets"
-                            placeholder="Sets"
-                            value={exerciseForm.sets}
-                            onChange={handleExerciseFormChange}
-                            style={{ marginLeft: '10px' }}
-                        />
-
-                        <input
-                            type="number"
-                            name="reps"
-                            placeholder="Reps"
-                            value={exerciseForm.reps}
-                            onChange={handleExerciseFormChange}
-                            style={{ marginLeft: '10px' }}
-                        />
-
-                        <button onClick={handleAddExercise} style={{ marginLeft: '10px' }}>
-                            Add Exercise
-                        </button>
+                        <h3 style={{ margin: 0 }}>Workout Calendar</h3>
+                        <div className="inline-row">
+                            <button className="btn-secondary" onClick={previousMonth}>
+                                ←
+                            </button>
+                            <strong style={{ minWidth: '140px', textAlign: 'center' }}>
+                                {getMonthName(currentMonth)} {currentYear}
+                            </strong>
+                            <button className="btn-secondary" onClick={nextMonth}>
+                                →
+                            </button>
+                        </div>
                     </div>
 
-                    <hr />
-
-                    <h4>Exercises</h4>
-
-                    {workout.exercises.length === 0 ? (
-                        <p>No exercises in this workout.</p>
-                    ) : (
-                        workout.exercises.map((exercise) => (
+                    <div
+                        style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(7, 1fr)',
+                            gap: '10px',
+                            marginBottom: '12px',
+                        }}
+                    >
+                        {dayNames.map((name) => (
                             <div
-                                key={exercise.id}
+                                key={name}
                                 style={{
-                                    border: '1px solid #ddd',
-                                    borderRadius: '6px',
-                                    padding: '10px',
-                                    marginBottom: '10px',
+                                    fontWeight: 700,
+                                    textAlign: 'center',
+                                    color: '#64748b',
+                                    paddingBottom: '6px',
                                 }}
                             >
-                                <p><strong>{exercise.exerciseName}</strong></p>
-                                <p>Sets: {exercise.sets}</p>
-                                <p>Reps: {exercise.reps}</p>
-                                <p>Order: {exercise.orderIndex}</p>
+                                {name}
+                            </div>
+                        ))}
 
-                                <button onClick={() => handleDeleteExercise(exercise.id)}>
-                                    Delete Exercise
+                        {Array.from({ length: firstDay - 1 }).map((_, index) => (
+                            <div key={`empty-${index}`} />
+                        ))}
+
+                        {Array.from({ length: daysInMonth }).map((_, index) => {
+                            const day = index + 1;
+                            const dateString = formatDate(currentYear, currentMonth, day);
+                            const status = getDayStatus(dateString);
+                            const isSelected = selectedDate === dateString;
+
+                            let backgroundColor = '#f8fafc';
+                            let border = '1px solid #e2e8f0';
+
+                            if (status === 'planned') {
+                                backgroundColor = '#dbeafe';
+                                border = '1px solid #bfdbfe';
+                            }
+
+                            if (status === 'completed') {
+                                backgroundColor = '#dcfce7';
+                                border = '1px solid #bbf7d0';
+                            }
+
+                            if (isSelected) {
+                                backgroundColor = '#fde68a';
+                                border = '1px solid #fcd34d';
+                            }
+
+                            return (
+                                <button
+                                    key={day}
+                                    onClick={() => handleDayClick(day)}
+                                    style={{
+                                        height: '48px',
+                                        borderRadius: '14px',
+                                        background: backgroundColor,
+                                        border,
+                                        fontWeight: 700,
+                                    }}
+                                >
+                                    {day}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: '18px',
+                            flexWrap: 'wrap',
+                            marginTop: '18px',
+                            color: '#475569',
+                            fontSize: '14px',
+                        }}
+                    >
+                        <span><span style={{ color: '#2563eb' }}>●</span> Planned</span>
+                        <span><span style={{ color: '#16a34a' }}>●</span> Completed</span>
+                        <span><span style={{ color: '#f59e0b' }}>●</span> Selected</span>
+                    </div>
+                </section>
+
+                <section className="card">
+                    <h3 style={{ marginBottom: '10px' }}>Workout Details</h3>
+
+                    <p style={{ color: '#64748b', marginBottom: '18px' }}>
+                        Selected date: <strong style={{ color: '#0f172a' }}>{selectedDate || 'No date selected'}</strong>
+                    </p>
+
+                    <div className="form-actions" style={{ marginBottom: '18px' }}>
+                        <button
+                            className="btn-primary"
+                            onClick={handleCreateWorkout}
+                            disabled={!selectedDate}
+                        >
+                            Create Workout
+                        </button>
+
+                        {workout && (
+                            <button
+                                className="btn-secondary"
+                                onClick={handleCompleteWorkout}
+                                disabled={workout.completed}
+                            >
+                                {workout.completed ? 'Workout Completed' : 'Mark as Completed'}
+                            </button>
+                        )}
+                    </div>
+
+                    {!workout ? (
+                        <div
+                            style={{
+                                padding: '18px',
+                                borderRadius: '16px',
+                                background: '#f8fafc',
+                                border: '1px dashed #cbd5e1',
+                                color: '#64748b',
+                            }}
+                        >
+                            Select a date and create a workout plan.
+                        </div>
+                    ) : (
+                        <div
+                            style={{
+                                opacity: isWorkoutCompleted ? 0.7 : 1,
+                                transition: 'opacity 0.2s ease',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    marginBottom: '18px',
+                                    padding: '16px',
+                                    borderRadius: '16px',
+                                    background: isWorkoutCompleted ? '#f8fafc' : '#eff6ff',
+                                    border: '1px solid #dbeafe',
+                                }}
+                            >
+                                <div className="form-group">
+                                    <label className="form-label">Exercise</label>
+                                    <select
+                                        name="exerciseId"
+                                        value={exerciseForm.exerciseId}
+                                        onChange={handleExerciseFormChange}
+                                        disabled={isWorkoutCompleted}
+                                    >
+                                        <option value="">Select exercise</option>
+                                        {allExercises.map((exercise) => (
+                                            <option key={exercise.id} value={exercise.id}>
+                                                {exercise.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div
+                                    style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: '1fr 1fr',
+                                        gap: '12px',
+                                        marginBottom: '12px',
+                                    }}
+                                >
+                                    <div>
+                                        <label className="form-label">Sets</label>
+                                        <input
+                                            type="number"
+                                            name="sets"
+                                            value={exerciseForm.sets}
+                                            onChange={handleExerciseFormChange}
+                                            disabled={isWorkoutCompleted}
+                                            placeholder="e.g. 4"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="form-label">Reps</label>
+                                        <input
+                                            type="number"
+                                            name="reps"
+                                            value={exerciseForm.reps}
+                                            onChange={handleExerciseFormChange}
+                                            disabled={isWorkoutCompleted}
+                                            placeholder="e.g. 10"
+                                        />
+                                    </div>
+                                </div>
+
+                                <button
+                                    className="btn-primary"
+                                    onClick={handleAddExercise}
+                                    disabled={isWorkoutCompleted}
+                                >
+                                    Add Exercise
                                 </button>
                             </div>
-                        ))
+
+                            {isWorkoutCompleted && (
+                                <div className="status-message" style={{ marginBottom: '16px' }}>
+                                    This workout is completed and can no longer be changed.
+                                </div>
+                            )}
+
+                            <h4 style={{ marginBottom: '12px' }}>Exercises</h4>
+
+                            {workout.exercises.length === 0 ? (
+                                <div
+                                    style={{
+                                        padding: '16px',
+                                        borderRadius: '16px',
+                                        background: '#f8fafc',
+                                        border: '1px dashed #cbd5e1',
+                                        color: '#64748b',
+                                    }}
+                                >
+                                    No exercises added yet.
+                                </div>
+                            ) : (
+                                <div style={{ display: 'grid', gap: '12px' }}>
+                                    {workout.exercises.map((exercise) => (
+                                        <div
+                                            key={exercise.id}
+                                            style={{
+                                                padding: '16px',
+                                                borderRadius: '16px',
+                                                border: '1px solid #e2e8f0',
+                                                background: '#ffffff',
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'flex-start',
+                                                    gap: '12px',
+                                                    flexWrap: 'wrap',
+                                                }}
+                                            >
+                                                <div>
+                                                    <div style={{ fontWeight: 800, marginBottom: '8px' }}>
+                                                        {exercise.exerciseName}
+                                                    </div>
+                                                    <div style={{ color: '#64748b' }}>
+                                                        Sets: <strong style={{ color: '#0f172a' }}>{exercise.sets}</strong>
+                                                        {' • '}
+                                                        Reps: <strong style={{ color: '#0f172a' }}>{exercise.reps}</strong>
+                                                        {' • '}
+                                                        Order: <strong style={{ color: '#0f172a' }}>{exercise.orderIndex}</strong>
+                                                    </div>
+                                                </div>
+
+                                                <button
+                                                    className="btn-danger"
+                                                    onClick={() => handleDeleteExercise(exercise.id)}
+                                                    disabled={isWorkoutCompleted}
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     )}
-                </div>
-            )}
+                </section>
+            </div>
         </div>
     );
 }

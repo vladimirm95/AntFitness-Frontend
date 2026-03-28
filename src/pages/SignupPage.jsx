@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { registerUser } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../services/authService';
 
 function SignupPage() {
     const navigate = useNavigate();
@@ -27,60 +27,65 @@ function SignupPage() {
 
         try {
             await registerUser(formData);
-            setMessage('Registration successful!');
-
-            // redirect na login
-            navigate('/login');
+            setMessage('');
+            navigate('/');
         } catch (error) {
-            console.error('Registration failed:', error);
-            setMessage('Registration failed.');
+            console.error('Signup failed:', error);
+            setMessage(error.response?.data?.message || 'Signup failed.');
         }
     }
 
     return (
-        <div>
-            <h2>Signup Page</h2>
+        <div className="auth-wrapper">
+            <div className="auth-card">
+                <h1 className="auth-title">Create account</h1>
+                <p className="auth-subtitle">
+                    Join AntFitness and start organizing your training plan.
+                </p>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Username</label>
-                    <br />
-                    <input
-                        type="text"
-                        name="username"
-                        value={formData.username}
-                        onChange={handleChange}
-                    />
-                </div>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label className="form-label">Username</label>
+                        <input
+                            type="text"
+                            name="username"
+                            value={formData.username}
+                            onChange={handleChange}
+                            placeholder="Choose a username"
+                        />
+                    </div>
 
-                <div style={{ marginTop: '10px' }}>
-                    <label>Email</label>
-                    <br />
-                    <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                    />
-                </div>
+                    <div className="form-group">
+                        <label className="form-label">Email</label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="Enter your email"
+                        />
+                    </div>
 
-                <div style={{ marginTop: '10px' }}>
-                    <label>Password</label>
-                    <br />
-                    <input
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                    />
-                </div>
+                    <div className="form-group">
+                        <label className="form-label">Password</label>
+                        <input
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="Create a password"
+                        />
+                    </div>
 
-                <button type="submit" style={{ marginTop: '10px' }}>
-                    Signup
-                </button>
-            </form>
+                    <div className="form-actions" style={{ marginTop: '8px' }}>
+                        <button type="submit" className="btn-primary" style={{ width: '100%' }}>
+                            Create account
+                        </button>
+                    </div>
+                </form>
 
-            {message && <p>{message}</p>}
+                {message && <div className="status-message">{message}</div>}
+            </div>
         </div>
     );
 }

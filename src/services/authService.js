@@ -10,29 +10,21 @@ export async function registerUser(registerData) {
     return response.data;
 }
 
+export async function logoutUser() {
+    const response = await api.post('/auth/logout');
+    return response.data;
+}
+
 export async function getCurrentUser() {
-    const token = localStorage.getItem('token');
-
-    const response = await api.get('/users/me', {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-
+    const response = await api.get('/users/me');
     return response.data;
 }
 
-export async function getWorkoutCalendar(year, month) {
-    const response = await api.get(`/workouts/calendar?year=${year}&month=${month}`);
-    return response.data;
-}
-
-export async function getWorkoutByDate(date) {
-    const response = await api.get(`/workouts?date=${date}`);
-    return response.data;
-}
-
-export async function getExercises() {
-    const response = await api.get('/exercises');
-    return response.data;
+export async function isAuthenticated() {
+    try {
+        const response = await api.get('/auth/status');
+        return response.data === true;
+    } catch {
+        return false;
+    }
 }
