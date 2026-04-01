@@ -1,34 +1,377 @@
 .hero-card {
-    background: linear-gradient(135deg, #eff6ff, #ffffff);
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
     border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 28px;
+    border-radius: 28px;
+    padding: 36px 32px;
     box-shadow: var(--shadow);
-    margin-bottom: 22px;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-card::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(200, 241, 53, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary-dim);
+    color: var(--primary);
+    border: 1px solid rgba(200, 241, 53, 0.25);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'Syne', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
 }
 
 .hero-title {
-    font-size: 34px;
+    font-size: 38px;
     font-weight: 800;
     margin-bottom: 10px;
     letter-spacing: -0.03em;
+    line-height: 1.1;
 }
+
+.hero-title span { color: var(--primary); }
 
 .hero-subtitle {
-    color: var(--muted);
-    font-size: 16px;
-    max-width: 700px;
+    color: var(--text2);
+    font-size: 15px;
+    max-width: 600px;
+    line-height: 1.6;
 }
 
-.dashboard-grid {
+.dashboard-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.cal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+}
+
+.cal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+}
+
+.cal-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+}
+
+.cal-month-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.02em;
+}
+
+.cal-year { color: var(--text2); font-weight: 400; }
+
+.cal-nav { display: flex; gap: 8px; align-items: center; }
+
+.cal-nav-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.cal-nav-btn:hover {
+    background: var(--surface3);
+    border-color: rgba(200, 241, 53, 0.3);
+    color: var(--primary);
+}
+
+.cal-day-names {
     display: grid;
-    grid-template-columns: 1.4fr 1fr;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 10px;
+}
+
+.cal-day-name {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    padding-bottom: 8px;
+}
+
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+
+.cal-day-btn {
+    aspect-ratio: 1;
+    border-radius: 12px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text2);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.18s ease;
+    padding: 0;
+}
+
+.cal-day-btn:hover {
+    background: var(--surface2);
+    color: var(--text);
+    border-color: var(--border2);
+}
+
+.cal-day-btn.is-today { color: var(--text); font-weight: 700; }
+
+.cal-day-btn.is-today::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--primary);
+}
+
+.cal-day-btn.status-planned {
+    background: var(--accent-dim);
+    border-color: rgba(108, 111, 255, 0.25);
+    color: #a5a8ff;
+}
+
+.cal-day-btn.status-completed {
+    background: var(--success-dim);
+    border-color: rgba(52, 211, 153, 0.25);
+    color: var(--success);
+}
+
+.cal-day-btn.is-selected {
+    background: var(--primary-dim);
+    border-color: rgba(200, 241, 53, 0.5);
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.cal-legend {
+    display: flex;
     gap: 20px;
-    align-items: start;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+}
+
+.cal-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--text2);
+}
+
+.cal-dot { width: 8px; height: 8px; border-radius: 50%; }
+.cal-dot.planned { background: var(--accent); }
+.cal-dot.completed { background: var(--success); }
+.cal-dot.selected { background: var(--primary); }
+
+.workout-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+}
+
+.workout-section-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.workout-date-display {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+}
+
+.workout-section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.workout-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.empty-state {
+    padding: 40px 24px;
+    border-radius: 18px;
+    background: var(--bg2);
+    border: 1px dashed var(--border2);
+    color: var(--text2);
+    text-align: center;
+}
+
+.empty-state-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.5; }
+.empty-state-text { font-size: 15px; line-height: 1.5; }
+
+.add-exercise-form {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.add-exercise-form-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+}
+
+.add-exercise-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 12px;
+    align-items: end;
+}
+
+@media (max-width: 700px) {
+    .add-exercise-grid { grid-template-columns: 1fr 1fr; }
+    .add-exercise-grid .btn-primary { grid-column: 1 / -1; }
+}
+
+.exercise-list { display: flex; flex-direction: column; gap: 10px; }
+
+.exercise-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    transition: border-color 0.18s ease;
+}
+
+.exercise-item:hover { border-color: var(--border2); }
+
+.exercise-item-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+    min-width: 0;
+}
+
+.exercise-item-order {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--surface3);
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.exercise-item-name {
+    font-weight: 600;
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.exercise-item-stats { display: flex; gap: 10px; flex-shrink: 0; }
+
+.stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.stat-pill strong { font-weight: 700; color: var(--text); }
+.stat-pill span { color: var(--text2); font-size: 11px; font-weight: 600; text-transform: uppercase; }
+
+.completed-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--success-dim);
+    color: var(--success);
+    border: 1px solid rgba(52, 211, 153, 0.25);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Syne', sans-serif;
 }
 
 @media (max-width: 960px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
+    .hero-title { font-size: 28px; }
+    .cal-month-name { font-size: 20px; }
+    .exercise-item-stats { display: none; }
 }

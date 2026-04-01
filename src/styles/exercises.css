@@ -1,45 +1,72 @@
-.exercises-header {
-    margin-bottom: 24px;
+.exercises-header { margin-bottom: 28px; }
+
+.exercises-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary-dim);
+    color: var(--primary);
+    border: 1px solid rgba(200, 241, 53, 0.2);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'Syne', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    margin-bottom: 14px;
 }
 
 .exercises-title {
-    font-size: 32px;
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
     font-weight: 800;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     letter-spacing: -0.03em;
+    line-height: 1.1;
 }
 
 .exercises-subtitle {
-    color: var(--muted);
-    max-width: 760px;
+    color: var(--text2);
+    max-width: 640px;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.exercises-filters-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
 }
 
 .exercises-toolbar {
     display: grid;
-    grid-template-columns: 1.3fr 1fr 1fr 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 22px;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
+    gap: 10px;
 }
 
 .exercises-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
 }
 
 .exercise-card {
-    background: white;
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 22px;
-    padding: 20px;
+    padding: 22px;
     box-shadow: var(--shadow);
     transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
 .exercise-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 16px 32px rgba(15, 23, 42, 0.09);
-    border-color: #cbd5e1;
+    transform: translateY(-3px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    border-color: var(--border2);
 }
 
 .exercise-top {
@@ -47,77 +74,77 @@
     justify-content: space-between;
     align-items: flex-start;
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
 
 .exercise-name {
-    font-size: 20px;
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
     font-weight: 800;
-    margin: 0 0 6px;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
 }
 
 .exercise-main-group {
     display: inline-flex;
     align-items: center;
-    padding: 6px 10px;
+    padding: 5px 11px;
     border-radius: 999px;
-    background: #dbeafe;
-    color: #1d4ed8;
-    font-size: 12px;
+    background: var(--accent-dim);
+    color: #a5a8ff;
+    border: 1px solid rgba(108, 111, 255, 0.2);
+    font-size: 11px;
     font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
 }
 
 .exercise-description {
-    color: var(--muted);
-    line-height: 1.55;
-    margin-bottom: 16px;
-    min-height: 72px;
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 18px;
+    min-height: 66px;
+    font-size: 14px;
 }
 
-.exercise-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
+.exercise-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 
 .exercise-tag {
     display: inline-flex;
     align-items: center;
-    padding: 7px 10px;
-    border-radius: 999px;
-    background: #f8fafc;
-    border: 1px solid var(--border);
-    color: #334155;
-    font-size: 12px;
-    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
+.exercise-tag.tag-strength { background: rgba(200,241,53,0.08); border-color: rgba(200,241,53,0.18); color: #b8e020; }
+.exercise-tag.tag-cardio { background: rgba(251,191,36,0.1); border-color: rgba(251,191,36,0.2); color: #fbbf24; }
+.exercise-tag.tag-advanced { background: var(--danger-dim); border-color: rgba(255,91,91,0.2); color: var(--danger); }
+.exercise-tag.tag-beginner { background: var(--success-dim); border-color: rgba(52,211,153,0.2); color: var(--success); }
+
 .exercise-empty {
-    padding: 26px;
-    border-radius: 20px;
-    background: #ffffff;
-    border: 1px dashed #cbd5e1;
-    color: var(--muted);
+    padding: 48px 24px;
+    border-radius: 22px;
+    background: var(--surface);
+    border: 1px dashed var(--border2);
+    color: var(--text2);
     text-align: center;
     box-shadow: var(--shadow);
+    font-size: 15px;
 }
 
 @media (max-width: 1100px) {
-    .exercises-toolbar {
-        grid-template-columns: 1fr 1fr;
-    }
+    .exercises-toolbar { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 700px) {
-    .exercises-toolbar {
-        grid-template-columns: 1fr;
-    }
-
-    .exercises-title {
-        font-size: 26px;
-    }
-
-    .exercise-description {
-        min-height: auto;
-    }
+    .exercises-toolbar { grid-template-columns: 1fr; }
+    .exercises-title { font-size: 28px; }
+    .exercise-description { min-height: auto; }
 }
